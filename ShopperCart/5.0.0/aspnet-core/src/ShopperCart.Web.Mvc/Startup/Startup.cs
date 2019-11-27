@@ -26,6 +26,7 @@ namespace ShopperCart.Web.Startup
     {
         private readonly IConfigurationRoot _appConfiguration;
 
+        [Obsolete]
         public Startup(IHostingEnvironment env)
         {
             _appConfiguration = env.GetAppConfiguration();
@@ -67,6 +68,7 @@ namespace ShopperCart.Web.Startup
             );
         }
 
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseAbp(); // Initializes ABP framework.

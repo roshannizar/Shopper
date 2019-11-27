@@ -22,11 +22,10 @@ namespace ShopperCart.Web.Startup
                     )
                 ).AddItem(
                     new MenuItemDefinition(
-                        PageNames.Tenants,
-                        L("Tenants"),
-                        url: "Tenants",
-                        icon: "business",
-                        requiredPermissionName: PermissionNames.Pages_Tenants
+                        PageNames.Product,
+                        L("Product"),
+                        url: "Product",
+                        icon: "business"
                     )
                 ).AddItem(
                     new MenuItemDefinition(
