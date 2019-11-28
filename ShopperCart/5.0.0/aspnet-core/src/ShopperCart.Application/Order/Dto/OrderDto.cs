@@ -1,4 +1,5 @@
-﻿using ShopperCart.Customer.Dto;
+﻿using Abp.Application.Services.Dto;
+using ShopperCart.Customers.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,5 +19,13 @@ namespace ShopperCart.Order.Dto
         public DateTime Date { get; set; }
         [Required]
         public StatusTypeDto Status { get; set; }
+
+        public OrderDto(int customerId, DateTime dateTime, List<OrderLineDto> orderLineDtos, StatusTypeDto status)
+        {
+            this.CustomerId = customerId;
+            this.Date = dateTime;
+            this.OrderItems = orderLineDtos;
+            this.Status = status;
+        }
     }
 }

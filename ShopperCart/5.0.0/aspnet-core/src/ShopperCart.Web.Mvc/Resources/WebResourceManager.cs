@@ -10,15 +10,18 @@ namespace ShopperCart.Web.Resources
 {
     public class WebResourceManager : IWebResourceManager
     {
+        [System.Obsolete]
         private readonly IHostingEnvironment _environment;
         private readonly List<string> _scriptUrls;
 
+        [System.Obsolete]
         public WebResourceManager(IHostingEnvironment environment)
         {
             _environment = environment;
             _scriptUrls = new List<string>();
         }
 
+        [System.Obsolete]
         public void AddScript(string url, bool addMinifiedOnProd = true)
         {
             _scriptUrls.AddIfNotContains(NormalizeUrl(url, "js"));
@@ -40,6 +43,7 @@ namespace ShopperCart.Web.Resources
             });
         }
 
+        [System.Obsolete]
         private string NormalizeUrl(string url, string ext)
         {
             if (_environment.IsDevelopment())

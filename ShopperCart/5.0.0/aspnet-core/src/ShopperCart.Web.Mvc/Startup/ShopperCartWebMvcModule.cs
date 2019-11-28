@@ -3,6 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using ShopperCart.Configuration;
+using Abp.AutoMapper;
+using ShopperCart.Web.Models.Product;
+using ShopperCart.Product.Dto;
 
 namespace ShopperCart.Web.Startup
 {
@@ -27,7 +30,14 @@ namespace ShopperCart.Web.Startup
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(ShopperCartWebMvcModule).GetAssembly());
+            var thisAssembly = typeof(ShopperCartWebMvcModule).GetAssembly();
+
+            IocManager.RegisterAssemblyByConvention(thisAssembly);
+
+            Configuration.Modules.AbpAutoMapper().Configurators.Add(
+                // Scan the assembly for classes which inherit from AutoMapper.Profile
+                cfg => cfg.AddMaps(thisAssembly)
+            );
         }
     }
 }

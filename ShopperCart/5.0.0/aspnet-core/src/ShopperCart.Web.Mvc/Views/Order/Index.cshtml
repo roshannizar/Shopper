@@ -1,7 +1,28 @@
-﻿
+﻿@model IEnumerable<ShopperCart.Web.Models.Order.OrderViewModel>
 @{
     ViewData["Title"] = "Order";
 }
 
-<h2>Order</h2>
+<h4>Order</h4>
+<a asp-controller="Order" asp-action="OrderItems" class="btn btn-primary btn-sm">New Order</a>
+<br />
+<br />
+@{
+    <div class="container-fluid">
+        <div class="row">
+            @if (Model != null)
+            {
+                foreach (var orders in Model)
+                {
+                    <partial name="_OrderList" model="orders" />
+                }
+            }
+            else
+            {
+                <p>No Orders Bro!</p>
+            }
+        </div>
+    </div>
+}
+
 

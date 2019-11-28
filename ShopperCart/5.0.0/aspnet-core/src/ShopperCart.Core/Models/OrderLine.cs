@@ -1,23 +1,21 @@
-﻿using Abp.Application.Services.Dto;
-using ShopperCart.Product.Dto;
+﻿using Abp.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace ShopperCart.Order.Dto
+namespace ShopperCart.Models
 {
-    public class OrderLineDto
+    public class OrderLine:Entity<int>
     {
-        public int Id { get; set; }
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
-        public virtual ProductDto Products { get; set; }
+        public virtual Product Products { get; set; }
 
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]
-        public virtual OrderDto Orders { get; set; }
+        public virtual Order Orders { get; set; }
         [Required]
         public int Quantity { get; set; }
         [Required]

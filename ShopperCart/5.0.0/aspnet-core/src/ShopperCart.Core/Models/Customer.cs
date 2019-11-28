@@ -1,11 +1,13 @@
 ﻿using Abp.Domain.Entities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
-namespace ShopperCart.Customers.Dto
+namespace ShopperCart.Models
 {
-    public class CustomerDto
+    public class Customer:Entity<int>
     {
-        public int Id {get; set;}
         [Required]
         [StringLength(50, ErrorMessage = "Reached the maximum limit")]
         public string FirstName { get; set; }

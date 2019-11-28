@@ -24,11 +24,13 @@ namespace ShopperCart.EntityFrameworkCore
                 {
                     if (options.ExistingConnection != null)
                     {
-                        ShopperCartDbContextConfigurer.Configure(options.DbContextOptions, options.ExistingConnection);
+                        ShopperCartDbContextConfigurer.Configure(options.DbContextOptions, 
+                            options.ExistingConnection);
                     }
                     else
                     {
-                        ShopperCartDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
+                        ShopperCartDbContextConfigurer.Configure(options.DbContextOptions, 
+                            options.ConnectionString);
                     }
                 });
             }

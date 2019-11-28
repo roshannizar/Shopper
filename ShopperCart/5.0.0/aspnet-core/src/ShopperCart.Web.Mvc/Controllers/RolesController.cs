@@ -29,7 +29,6 @@ namespace ShopperCart.Web.Controllers
                 Roles = roles,
                 Permissions = permissions
             };
-
             return View(model);
         }
 

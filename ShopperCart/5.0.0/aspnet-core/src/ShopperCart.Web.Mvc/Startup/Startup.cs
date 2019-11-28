@@ -18,7 +18,10 @@ using Abp.Dependency;
 using Abp.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json.Serialization;
-
+using ShopperCart.Product;
+using ShopperCart.Order;
+using AutoMapper;
+using ShopperCart.Customer;
 
 namespace ShopperCart.Web.Startup
 {
@@ -56,6 +59,10 @@ namespace ShopperCart.Web.Startup
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddScoped<IWebResourceManager, WebResourceManager>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IProductService, ProductService>();
 
             services.AddSignalR();
 

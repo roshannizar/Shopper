@@ -1,10 +1,12 @@
-﻿using System;
+﻿using ShopperCart.Customers.Dto;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ShopperCart.Customer
 {
-    class ICustomerService
+    public interface ICustomerService
     {
+        IEnumerable<CustomerDto> GetCustomers();
     }
 }

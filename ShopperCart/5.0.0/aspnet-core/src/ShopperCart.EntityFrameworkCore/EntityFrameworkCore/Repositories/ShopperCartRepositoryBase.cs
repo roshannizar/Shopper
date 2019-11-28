@@ -10,7 +10,8 @@ namespace ShopperCart.EntityFrameworkCore.Repositories
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <typeparam name="TPrimaryKey">Primary key type of the entity</typeparam>
-    public abstract class ShopperCartRepositoryBase<TEntity, TPrimaryKey> : EfCoreRepositoryBase<ShopperCartDbContext, TEntity, TPrimaryKey>
+    public abstract class ShopperCartRepositoryBase<TEntity, TPrimaryKey> : 
+        EfCoreRepositoryBase<ShopperCartDbContext, TEntity, TPrimaryKey>
         where TEntity : class, IEntity<TPrimaryKey>
     {
         protected ShopperCartRepositoryBase(IDbContextProvider<ShopperCartDbContext> dbContextProvider)
@@ -26,7 +27,8 @@ namespace ShopperCart.EntityFrameworkCore.Repositories
     /// This is a shortcut of <see cref="ShopperCartRepositoryBase{TEntity,TPrimaryKey}"/> for <see cref="int"/> primary key.
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
-    public abstract class ShopperCartRepositoryBase<TEntity> : ShopperCartRepositoryBase<TEntity, int>, IRepository<TEntity>
+    public abstract class ShopperCartRepositoryBase<TEntity> : ShopperCartRepositoryBase<TEntity, int>, 
+        IRepository<TEntity>
         where TEntity : class, IEntity<int>
     {
         protected ShopperCartRepositoryBase(IDbContextProvider<ShopperCartDbContext> dbContextProvider)

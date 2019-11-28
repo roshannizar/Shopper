@@ -14,7 +14,8 @@ namespace ShopperCart.EntityFrameworkCore
             var builder = new DbContextOptionsBuilder<ShopperCartDbContext>();
             var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
 
-            ShopperCartDbContextConfigurer.Configure(builder, configuration.GetConnectionString(ShopperCartConsts.ConnectionStringName));
+            ShopperCartDbContextConfigurer.Configure(builder,
+                configuration.GetConnectionString(ShopperCartConsts.ConnectionStringName));
 
             return new ShopperCartDbContext(builder.Options);
         }

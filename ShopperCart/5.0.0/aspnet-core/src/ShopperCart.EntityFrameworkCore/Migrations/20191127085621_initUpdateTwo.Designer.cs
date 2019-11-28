@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopperCart.EntityFrameworkCore;
 
 namespace ShopperCart.Migrations
 {
     [DbContext(typeof(ShopperCartDbContext))]
-    partial class ShopperCartDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191127085621_initUpdateTwo")]
+    partial class initUpdateTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

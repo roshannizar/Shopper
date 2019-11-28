@@ -10,9 +10,11 @@ namespace ShopperCart.Web.Host.Startup
        typeof(ShopperCartWebCoreModule))]
     public class ShopperCartWebHostModule: AbpModule
     {
+        [System.Obsolete]
         private readonly IHostingEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
+        [System.Obsolete]
         public ShopperCartWebHostModule(IHostingEnvironment env)
         {
             _env = env;

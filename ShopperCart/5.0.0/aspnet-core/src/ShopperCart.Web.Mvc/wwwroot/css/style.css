@@ -8029,3 +8029,7 @@ html.ie11 .bs-searchbox .form-control {
 .swal-footer {
     text-align: center;
 }
+
+.customer-select{
+    width:25%;
+}

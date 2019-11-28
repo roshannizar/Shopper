@@ -23,9 +23,11 @@ namespace ShopperCart
      )]
     public class ShopperCartWebCoreModule : AbpModule
     {
+        [Obsolete]
         private readonly IHostingEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
+        [Obsolete]
         public ShopperCartWebCoreModule(IHostingEnvironment env)
         {
             _env = env;
