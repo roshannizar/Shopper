@@ -3,13 +3,13 @@
 <div class="card margin border-color-strip" style="width: 18rem;">
     <div class="card-body">
         <label class="card-title font-weight-bold">Ref No: @Model.Id</label>
-        @{ if (@Model.Status == 0)
+        @{ if (Model.Status == 0)
             {
-                <span class="badge badge-warning right">Status: @Model.Status</span>
+                <span class="badge label-warning right">Status: @Model.Status</span>
             }
             else
             {
-                <span class="badge badge-success right">Status: @Model.Status</span>
+                <span class="badge label-success right">Status: @Model.Status</span>
             }
         }
         <hr />

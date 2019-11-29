@@ -97,5 +97,21 @@ namespace ShopperCart.Web.Mvc.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost]
+        public IActionResult OrderDelete(int id)
+        {
+            try
+            {
+                orderService.DeleteOrder(id);
+                TempData["Message"] = "You have deleted the order Ref No: " + id + " successfully!";
+                return RedirectToAction("Index", "Order");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error occured while deleting the order " + id + "! " + ex;
+                throw new Exception();
+            }
+        }
     }
 }
