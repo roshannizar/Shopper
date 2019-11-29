@@ -16,7 +16,7 @@
                 <p class="mb-1">Description: @Model.Products.Description</p>
                 <div class="pull-right">
                     @{
-                        if (ViewBag.Status == 0)
+                        if (Model.Orders.Status == 0)
                         {
                             <input type="button" class="btn btn-danger btm-sm right margin-left" id="DeleteBtn @Model.Id" onclick="DeleteOrderItem(@Model.Id)" value="Delete">
                             <input type="button" class="btn btn-warning btm-sm right" id="EditBtn @Model.Id" data-target="#createOrderModal" data-toggle="modal" onclick="EditOrders(@Model.Id)" value="Edit">

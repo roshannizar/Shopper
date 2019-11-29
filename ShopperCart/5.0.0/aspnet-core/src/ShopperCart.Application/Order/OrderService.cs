@@ -19,14 +19,14 @@ namespace ShopperCart.Order
         private readonly ProductService productService;
         private readonly IMapper mapper;
 
-        public OrderService(IRepository<Models.Order> orderRepository,IRepository<Models.Product> productRepository
-            ,IUnitOfWork unitOfWork,IRepository<Models.OrderLine> orderItemRepository, IMapper mapper)
+        public OrderService(IRepository<Models.Order> orderRepository, IRepository<Models.Product> productRepository
+            , IUnitOfWork unitOfWork, IRepository<Models.OrderLine> orderItemRepository, IMapper mapper)
         {
             this.orderRepository = orderRepository;
             this.unitOfWork = unitOfWork;
             this.orderItemRepository = orderItemRepository;
             this.mapper = mapper;
-            productService = new ProductService(productRepository, mapper,unitOfWork);
+            productService = new ProductService(productRepository, mapper, unitOfWork);
         }
 
         public void CreateOrder(OrderDto orderDto)
@@ -39,7 +39,7 @@ namespace ShopperCart.Order
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
 
-                OrderDto orderDtoTemp = new OrderDto(orderDto.CustomerId,orderDto.Date,orderDto.OrderItems,orderDto.Status);
+                OrderDto orderDtoTemp = new OrderDto(orderDto.CustomerId, orderDto.Date, orderDto.OrderItems, orderDto.Status);
                 var order = mapper.Map<Models.Order>(orderDtoTemp);
                 //This method will add orderlines as well, since this entity has the orderline list
                 orderRepository.Insert(order);
@@ -70,9 +70,9 @@ namespace ShopperCart.Order
                 else
                 {
                     //Retrieving the orderLine from the database, so that can get the quantity
-                    var orderLineBOTemp = GetOrderLineByOrderId(id);
+                    var orderBOTemp = GetOrderById(id);
 
-                    foreach (var temp in orderLineBOTemp)
+                    foreach (var temp in orderBOTemp.OrderItems)
                     {
                         //updates the quantity
                         productService.Update(temp.ProductId, temp.Quantity);
@@ -87,47 +87,6 @@ namespace ShopperCart.Order
             {
                 throw ex;
             }
-        }
-
-        public IEnumerable<OrderDto> GetOrderById(int id)
-        {
-            try
-            {
-                var orders = orderRepository.GetAllIncluding(c => c.Customers, ol => ol.OrderItems).Where(o => o.Id == id);
-                var query = mapper.Map<IEnumerable<OrderDto>>(orders);
-                return query;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public IEnumerable<OrderLineDto> GetOrderLineByOrderId(int id)
-        {
-            var orderLines = orderItemRepository.GetAllIncluding(p => p.Products).Where(ol => ol.OrderId == id);
-            var query = mapper.Map<IEnumerable<OrderLineDto>>(orderLines);
-            return query;
-        }
-
-        public IEnumerable<OrderDto> GetOrders()
-        {
-            try
-            {
-                var orders = orderRepository.GetAllIncluding(c => c.Customers,o => o.OrderItems).ToList();
-                var query = mapper.Map<IEnumerable<OrderDto>>(orders);
-                return query;
-            }
-            catch (OrderNotFoundException ex)
-            {
-                throw ex;
-            }
-        }
-
-        public OrderDto GetSingleOrderById(int id)
-        {
-            var query = orderRepository.Get(id);
-            return mapper.Map<OrderDto>(query);
         }
 
         public void UpdateOrder(List<OrderLineDto> orderLineBOs)
@@ -175,6 +134,42 @@ namespace ShopperCart.Order
                 throw new OrderLineNotFoundException();
             orderItemRepository.Delete(orderLine);
             unitOfWork.SaveChanges();
+        }
+
+        public OrderDto GetOrderById(int id)
+        {
+            try
+            {
+                var orders = orderRepository.GetAllIncluding().Include(i => i.OrderItems).ThenInclude(i => i.Products).Include(i => i.Customers).FirstOrDefault(o => o.Id == id);
+                var query = mapper.Map<OrderDto>(orders);
+                return query;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IEnumerable<OrderDto> GetOrders()
+        {
+            try
+            {
+                var orders = orderRepository.GetAllIncluding(c => c.Customers, o => o.OrderItems).ToList();
+
+                if (orders != null)
+                {
+                    var query = mapper.Map<IEnumerable<OrderDto>>(orders);
+                    return query;
+                }
+                else
+                {
+                    throw new OrderNotFoundException();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

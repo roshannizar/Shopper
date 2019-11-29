@@ -68,7 +68,7 @@ namespace ShopperCart.Web.Mvc.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = "Error Occured while creating an Order! " + ex;
-                throw new Exception();
+                throw ex;
             }
         }
 
@@ -79,31 +79,22 @@ namespace ShopperCart.Web.Mvc.Controllers
             {
                 //Loads the orders
                 var ordersBO = orderService.GetOrderById(id);
-                ViewBag.Order = ObjectMapper.Map<IEnumerable<OrderViewModel>>(ordersBO);
-                //Load the status
-                var StatusBO = orderService.GetSingleOrderById(id).Status;
-                ViewBag.Status = ObjectMapper.Map<StatusTypeViewModel>(StatusBO);
 
-                if (ViewBag.Status != null)
+                //checks whether the order is null or has value
+                if (ordersBO == null)
                 {
-                    var models = orderService.GetOrderLineByOrderId(id);
-
-                    if (models == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        var model = ObjectMapper.Map<IEnumerable<OrderLineViewModel>>(models);
-                        return View(model);
-                    }
+                    return NotFound();
                 }
-                return NotFound();
+                else
+                {
+                    var model = ObjectMapper.Map<OrderViewModel>(ordersBO);
+                    return View(model);
+                }
             }
             catch (Exception ex)
             {
                 TempData["Message"] = "No Order found! " + ex;
-                throw new Exception();
+                throw ex;
             }
         }
     }

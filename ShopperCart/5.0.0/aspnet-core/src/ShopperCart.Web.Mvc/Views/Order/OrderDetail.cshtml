@@ -9,16 +9,13 @@
 <br />
 <br />
 
-@foreach (var order in ViewBag.Order)
-{
-    <partial name="_OrderDetailCollapse" model="order" />
-}
+<partial name="_OrderDetailCollapse" model="Model" />
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>Order Items</h4>
     </div>
-    @foreach (var items in Model)
+    @foreach (var items in Model.OrderItems)
     {
         <partial name="_EditOrder" model="@items" />
     }
