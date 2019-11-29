@@ -29,8 +29,8 @@ namespace ShopperCart.Web.Mvc.Controllers
         public IActionResult Index()
         {
             var OrdersDto = orderService.GetOrders();
-            var Orders = ObjectMapper.Map<IEnumerable<OrderViewModel>>(OrdersDto);
-            return View(Orders);
+            var model = ObjectMapper.Map<IEnumerable<OrderViewModel>>(OrdersDto);
+            return View(model);
         }
 
         public IActionResult OrderItems()
@@ -57,6 +57,7 @@ namespace ShopperCart.Web.Mvc.Controllers
         {
             try
             {
+                orderViewModel.Status = StatusTypeViewModel.Pending;
                 var order = ObjectMapper.Map<OrderDto>(orderViewModel);
                 //Create Order
                 orderService.CreateOrder(order);
@@ -67,6 +68,41 @@ namespace ShopperCart.Web.Mvc.Controllers
             catch (Exception ex)
             {
                 TempData["Message"] = "Error Occured while creating an Order! " + ex;
+                throw new Exception();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult OrderDetail(int id)
+        {
+            try
+            {
+                //Loads the orders
+                var ordersBO = orderService.GetOrderById(id);
+                ViewBag.Order = ObjectMapper.Map<IEnumerable<OrderViewModel>>(ordersBO);
+                //Load the status
+                var StatusBO = orderService.GetSingleOrderById(id).Status;
+                ViewBag.Status = ObjectMapper.Map<StatusTypeViewModel>(StatusBO);
+
+                if (ViewBag.Status != null)
+                {
+                    var models = orderService.GetOrderLineByOrderId(id);
+
+                    if (models == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        var model = ObjectMapper.Map<IEnumerable<OrderLineViewModel>>(models);
+                        return View(model);
+                    }
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "No Order found! " + ex;
                 throw new Exception();
             }
         }

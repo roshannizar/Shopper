@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ShopperCart.Order.Dto;
 using ShopperCart.Product;
 
@@ -87,22 +89,32 @@ namespace ShopperCart.Order
             }
         }
 
-        public OrderDto GetOrderById(int id)
+        public IEnumerable<OrderDto> GetOrderById(int id)
         {
-            var query = orderRepository.Get(id);
-            return mapper.Map<OrderDto>(query);
+            try
+            {
+                var orders = orderRepository.GetAllIncluding(c => c.Customers, ol => ol.OrderItems).Where(o => o.Id == id);
+                var query = mapper.Map<IEnumerable<OrderDto>>(orders);
+                return query;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public IEnumerable<OrderLineDto> GetOrderLineByOrderId(int id)
         {
-            throw new NotImplementedException();
+            var orderLines = orderItemRepository.GetAllIncluding(p => p.Products).Where(ol => ol.OrderId == id);
+            var query = mapper.Map<IEnumerable<OrderLineDto>>(orderLines);
+            return query;
         }
 
         public IEnumerable<OrderDto> GetOrders()
         {
             try
             {
-                var orders = orderRepository.GetAll();
+                var orders = orderRepository.GetAllIncluding(c => c.Customers,o => o.OrderItems).ToList();
                 var query = mapper.Map<IEnumerable<OrderDto>>(orders);
                 return query;
             }

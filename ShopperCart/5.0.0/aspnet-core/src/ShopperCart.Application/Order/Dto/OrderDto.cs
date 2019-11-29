@@ -20,6 +20,11 @@ namespace ShopperCart.Order.Dto
         [Required]
         public StatusTypeDto Status { get; set; }
 
+        public OrderDto()
+        {
+
+        }
+
         public OrderDto(int customerId, DateTime dateTime, List<OrderLineDto> orderLineDtos, StatusTypeDto status)
         {
             this.CustomerId = customerId;

@@ -22,7 +22,7 @@ namespace ShopperCart.Web.Mvc.Controllers
         public ActionResult Index()
         {
             var productDto = productService.GetProducts();
-            var model = ObjectMapper.Map<IEnumerable<ProductViewModel>>(productDto);
+            var model = ObjectMapper.Map<IQueryable<ProductViewModel>>(productDto);
             return View(model);
         }
 

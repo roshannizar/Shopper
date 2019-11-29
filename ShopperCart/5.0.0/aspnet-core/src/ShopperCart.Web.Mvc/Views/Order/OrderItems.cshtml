@@ -3,7 +3,7 @@
     ViewData["Title"] = "OrderItems";
 }
 
-<h4>Order Items</h4>
+<h3>Order Items</h3>
 <a class="btn btn-outline-primary btn-sm" asp-controller="Order" asp-action="Index">Back</a>
 <br />
 <br />
@@ -17,7 +17,7 @@
 <br />
 <div>
     <table class="table" id="tableForm">
-        <tr class="thead-dark">
+        <tr class="nestable-dark-theme">
             <th>Product Name</th>
             <th colspan="2">Description</th>
             <th>Unit Price</th>
@@ -32,17 +32,17 @@
                 </select>
             </td>
             <td colspan="2">
-                <p id="description">Description</p>
+                <p id="description">---------------</p>
             </td>
             <td>
-                <p id="unitprice">Rs: 50</p>
+                <p id="unitprice">Rs: 0</p>
             </td>
-            <td>
+            <td class="small-width">
                 <input type="number" disabled class="form-control form-group-sm" id="quantity" min="0" placeholder="Eg: 2" onchange="CalculateTotal(this.value)" />
-                <span id="hiddenQuantity" class="badge badge-secondary small" hidden>Quantity In Stock: <span id="quantityInStock">2</span></span>
+                <span id="hiddenQuantity" class="badge badge-secondary small" hidden>Quantity In Stock: <span id="quantityInStock">0</span></span>
             </td>
             <td>
-                <p id="totalamount">Rs: 100</p>
+                <p id="totalamount">Rs: 0</p>
             </td>
             <td>
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="CreateOrderLine()" id="addItem">Add Item</button>
@@ -55,7 +55,7 @@
             <td></td>
             <td>Grand Total</td>
             <td>
-                <p id="grandtotal">Rs: 100</p>
+                <p id="grandtotal">Rs: 0</p>
             </td>
             <td>
                 <button class="btn btn-primary btn-sm" id="confirmOrder" data-toggle="modal" data-target="#confirmationBox">Confirm Order</button>

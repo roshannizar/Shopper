@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using AutoMapper;
@@ -80,6 +81,7 @@ namespace ShopperCart.Product
 
                 var product = mapper.Map<Models.Product>(productBO);
                 repository.Update(product);
+                unitOfWork.SaveChanges();
             }
             catch (Exception ex)
             {

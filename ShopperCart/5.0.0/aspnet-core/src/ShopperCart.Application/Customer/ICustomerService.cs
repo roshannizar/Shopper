@@ -1,7 +1,6 @@
 ﻿using ShopperCart.Customers.Dto;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace ShopperCart.Customer
 {

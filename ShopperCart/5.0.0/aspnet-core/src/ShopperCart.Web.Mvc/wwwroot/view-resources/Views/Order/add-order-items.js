@@ -99,20 +99,20 @@ function ConfirmOrder() {
         order.CustomerId = parseInt(customerId);
         order.Date = currentDate.replace(/^"(.*)"$/, '$1');
 
-        const url = '../Order/CreateOrder';
-
-        const request = new Request(url, {
-            method: 'POST',
-            body: JSON.stringify(order),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
+        $.ajax({
+            url: '../Order/CreateOrder',
+            dataType: 'json',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(order),
+            processData: false,
+            success: function (data, textStatus, jQxhr) {
+                console.log(data, textStatus, jQxhr);
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(jqXhr, textStatus, errorThrown);
+            }
         });
-
-        fetch(request)
-            .then(res => {
-                res.request
-            });
 
     } else {
         alert("Choose a customer");
