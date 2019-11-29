@@ -2,29 +2,26 @@
 @{
     ViewData["Title"] = "OrderDetail";
 }
+<h3>Order in detail</h3>
+<a class="btn btn-outline-secondary btn-sm" asp-controller="Order" asp-action="Index">Back</a>
+<a href="" class="btn btn-outline-danger btn-sm">Delete</a>
+<button class="btn btn-primary btn-sm" id="SaveChanges" onclick="Confirm()" hidden>Save Changes</button>
+<br />
+<br />
 
+@foreach (var order in ViewBag.Order)
+{
+    <partial name="_OrderDetailCollapse" model="order" />
+}
 
-    <h3>Order in detail</h3>
-    <hr />
-    <a class="btn btn-outline-secondary btn-sm" asp-controller="Order" asp-action="Index">Back</a>
-    <a href="" class="btn btn-outline-danger btn-sm">Delete</a>
-    <button class="btn btn-primary btn-sm" hidden id="SaveChanges" onclick="Confirm()">Save Changes</button>
-    <br /><br />
-
-    @foreach (var order in ViewBag.Order)
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Order Items</h4>
+    </div>
+    @foreach (var items in Model)
     {
-        <partial name="_OrderDetailCollapse" model="order" />
+        <partial name="_EditOrder" model="@items" />
     }
+</div>
 
-    <br />
-    <div class="container-fluid">
-        <h5 class="font-weight-bold">Order Items</h5>
-    </div>
-    <div class="list-group">
-        @foreach (var items in Model)
-        {
-            <partial name="_EditOrder" model="@items" />
-        }
-    </div>
-
-    <script src="~/view-resources/Views/Order/edit-order.js"></script>
+<script src="~/view-resources/Views/Order/edit-order.js"></script>

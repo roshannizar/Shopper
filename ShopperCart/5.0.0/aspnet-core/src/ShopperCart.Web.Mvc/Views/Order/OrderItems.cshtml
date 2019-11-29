@@ -77,7 +77,9 @@
                 Are you sure you want to place order?
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" onclick="ConfirmOrder()">Yes</button>
+                <form method="post">
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="ConfirmOrder()">Yes</button>
+                </form>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
             </div>
         </div>
