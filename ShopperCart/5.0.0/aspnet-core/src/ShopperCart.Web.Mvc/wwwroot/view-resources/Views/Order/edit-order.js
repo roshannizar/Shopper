@@ -19,6 +19,9 @@ function EditOrders(id) {
         document.getElementById("description").value = description;
         document.getElementById("UnitPrice").value = unitPrice;
         document.getElementById("Quantity").value = quantity;
+        editBtn.value = "Undo Edit";
+    } else {
+        editBtn.value = "Edit";
     }
 }
 
@@ -48,8 +51,6 @@ function DeleteOrderItem(id) {
         document.getElementById("EditBtn " + id).hidden = true;
     } else {
         deleteBtn.value = "Delete";
-
-
     }
 }
 

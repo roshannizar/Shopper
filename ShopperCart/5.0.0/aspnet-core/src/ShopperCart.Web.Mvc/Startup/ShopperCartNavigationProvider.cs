@@ -36,6 +36,14 @@ namespace ShopperCart.Web.Startup
                         url: "Order",
                         icon: "shopping_basket"
                     )
+                )
+                .AddItem(
+                    new MenuItemDefinition(
+                        PageNames.Order,
+                        L("Customer"),
+                        url: "Customer",
+                        icon: "supervisor_account"
+                    )
                 ).AddItem(
                     new MenuItemDefinition(
                         PageNames.Users,
