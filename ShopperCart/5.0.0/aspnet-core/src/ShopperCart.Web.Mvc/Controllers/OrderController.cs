@@ -113,5 +113,31 @@ namespace ShopperCart.Web.Mvc.Controllers
                 throw new Exception();
             }
         }
+
+        [HttpPost]
+        public IActionResult OrderEdit([FromBody]List<OrderLineViewModel> orderItemsViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return View("OrderEdit");
+
+                if (!(orderItemsViewModel.Count > 0))
+                    return RedirectToAction("Index");
+
+                var order = ObjectMapper.Map<List<OrderLineDto>>(orderItemsViewModel);
+                orderService.UpdateOrder(order);
+
+                TempData["Message"] = "Save changes made for order Ref No: " +
+                    orderItemsViewModel[0].OrderId + " successfully!";
+                return RedirectToAction("Index", "Order");
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error occured while updating the order! " + ex;
+                throw new Exception();
+            }
+        }
     }
 }

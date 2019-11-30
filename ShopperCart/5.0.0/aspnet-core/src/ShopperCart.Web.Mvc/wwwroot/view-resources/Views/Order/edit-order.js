@@ -80,18 +80,19 @@ function ConfirmOrderChanges() {
 }
 
 function Confirm() {
-    const url = "../../Order/OrderEdit";
 
-    const request = new Request(url, {
-        method: 'POST',
-        body: JSON.stringify(TempProduct),
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
+    $.ajax({
+        url: '../OrderEdit',
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(TempProduct),
+        processData: false,
+        success: function (data, textStatus, jQxhr) {
+            console.log(data, textStatus, jQxhr);
+        },
+        error: function (jqXhr, textStatus, errorThrown) {
+            console.log(jqXhr, textStatus, errorThrown);
+        }
     });
-
-    fetch(request)
-        .then(res => {
-            res.request
-        });
 }
