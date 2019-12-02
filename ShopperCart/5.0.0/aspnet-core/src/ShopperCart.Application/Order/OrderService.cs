@@ -89,12 +89,12 @@ namespace ShopperCart.Order
             }
         }
 
-        public void UpdateOrder(List<OrderLineDto> orderLineBOs)
+        public void UpdateOrder(OrderDto orderDtos)
         {
             try
             {
 
-                foreach (var item in orderLineBOs)
+                foreach (var item in orderDtos.OrderItems)
                 {
                     //Retrieving the orderline as temporary to check the database quantity
                     var tempOrderLine = orderItemRepository.Get(item.Id);

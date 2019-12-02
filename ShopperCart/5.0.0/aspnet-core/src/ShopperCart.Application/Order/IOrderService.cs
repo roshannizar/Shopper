@@ -11,7 +11,7 @@ namespace ShopperCart.Order
         IEnumerable<OrderDto> GetOrders();
         OrderDto GetOrderById(int id);
         void CreateOrder(OrderDto order);
-        void UpdateOrder(List<OrderLineDto> orderLineBOs);
+        void UpdateOrder(OrderDto orderBOs);
         void DeleteOrder(int id);
     }
 }

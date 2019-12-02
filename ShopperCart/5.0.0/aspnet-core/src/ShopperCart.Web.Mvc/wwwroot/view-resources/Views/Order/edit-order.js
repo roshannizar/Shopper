@@ -82,12 +82,23 @@ function ConfirmOrderChanges() {
 
 function Confirm() {
 
+    var date = new Date();
+    var currentDate = JSON.stringify(date);
+
+    var order = {
+        CustomerId: 0,
+        Date: null,
+        OrderItems: TempProduct
+    }
+
+    order.Date = currentDate.replace(/^"(.*)"$/, '$1');
+
     $.ajax({
         url: '../OrderEdit',
         dataType: 'json',
         type: 'post',
         contentType: 'application/json',
-        data: JSON.stringify(TempProduct),
+        data: JSON.stringify(order),
         processData: false,
         success: function (data, textStatus, jQxhr) {
             console.log(data, textStatus, jQxhr);
