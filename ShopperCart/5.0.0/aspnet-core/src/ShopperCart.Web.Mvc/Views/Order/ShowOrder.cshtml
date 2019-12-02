@@ -2,10 +2,12 @@
 @{
     ViewData["Title"] = "Order Details";
 }
-<h3>Order</h3>
-<a class="btn btn-outline-secondary btn-sm" asp-controller="Order" asp-action="Index">Back</a>
-<a href="" class="btn btn-outline-danger btn-sm">Delete</a>
-<button class="btn btn-primary btn-sm" id="SaveChanges" onclick="Confirm()" hidden>Save Changes</button>
+<h3>Order Detail</h3>  
+<label class="small">Ref No - @Model.Id</label><br />
+<a class="btn btn-outline-secondary btn-sm" asp-controller="Order" asp-action="Index">View Orders</a>
+<a class="btn btn-danger btn-sm margin-left" asp-action="RemoveOrder" asp-controller="Order" asp-route-Id="@Model.Id">Delete Order</a>
+<button class="btn btn-danger btn-sm right margin-left" onclick="EraseChanges()" hidden>Cancel Changes</button>
+<button class="btn btn-primary btn-sm right" id="SaveChanges" onclick="Confirm()" hidden>Save Changes</button>
 <br />
 <br />
 
@@ -16,8 +18,16 @@
         <h4>Order Items</h4>
     </div>
     <br />
+    @{
+        if (Model.Status == 0)
+        {
+            <div class="container-fluid">
+                <button class="btn btn-primary btn-sm" id="linkBreaker" data-toggle="modal" data-target="#createNewOrderModal">Add New Item</button>
+            </div>
+        }
+    }
     <div class="container-fluid">
-        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createOrderModal">Add New Item</button>
+        <table id="tableForm" class="table"></table>
     </div>
     @foreach (var items in Model.OrderItems)
     {
@@ -25,4 +35,58 @@
     }
 </div>
 
+<div class="modal fade" id="createNewOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Editing Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="container-fluid">
+                <form method="post">
+                    <div class="form-row">
+                        <div class="col">
+                            <label class="small font-weight-bold" for="Name">Product Name: </label>
+                            <select class="form-control form-group-sm" id="productId" onchange="LoadProducts(this.value,'UpdateNewOrder')" asp-items="@ViewBag.ProductList">
+                                <option value="0">-- Please choose a product --</option>
+                            </select>
+                            <input type="text" id="orderId" hidden />
+                            <input type="text" id="id" hidden />
+                            <input type="text" id="productid" hidden />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-row">
+                        <div class="col">
+                            <label class="small font-weight-bold" for="description">Description:</label>
+                            <textarea class="form-control" placeholder="Give a description about the product" disabled name="Description" id="descriptionText" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label class="small font-weight-bold" for="UnitPrice">Unit Price:</label>
+                            <input type="number" class="form-control" placeholder="eg: 12.00" disabled name="UnitPrice" id="UnitPriceText">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small font-weight-bold" for="Quantity">Quantity:</label>
+                            <input type="number" class="form-control" placeholder="eg: 10" name="Quantity" id="QuantityText">
+                        </div>
+                        <br />
+                    </div>
+                    <br />
+                    <div class="modal-footer">
+                        <br />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" onclick="PlaceNewOrder()" data-dismiss="modal">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/view-resources/Views/Order/edit-order.js"></script>
+<script src="~/view-resources/Views/Order/load-product.js"></script>

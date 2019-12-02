@@ -42,7 +42,7 @@ namespace ShopperCart.Web.Startup
                         PageNames.Order,
                         L("Customers"),
                         url: "Customer",
-                        icon: "supervisor_account"
+                        icon: "insert_emoticon"
                     )
                 ).AddItem(
                     new MenuItemDefinition(

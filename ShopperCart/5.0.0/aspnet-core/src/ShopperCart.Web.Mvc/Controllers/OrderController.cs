@@ -77,6 +77,12 @@ namespace ShopperCart.Web.Mvc.Controllers
         {
             try
             {
+                ViewBag.ProductList = productService.GetProducts().Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString()
+                }).OrderBy(x => x.Text).ToList();
+
                 //Loads the orders
                 var ordersBO = orderService.GetOrderById(id);
 

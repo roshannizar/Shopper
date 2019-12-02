@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td>
-                <select class="form-control form-group-sm" id="productId" onchange="LoadProducts(this.value)" asp-items="@ViewBag.ProductList">
+                <select class="form-control form-group-sm" id="productId" onchange="LoadProducts(this.value,'NewOrder')" asp-items="@ViewBag.ProductList">
                     <option value="0">-- Please choose a product --</option>
                 </select>
             </td>

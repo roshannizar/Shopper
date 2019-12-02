@@ -2,7 +2,7 @@
 <localizationDictionary culture="en">
   <texts>
     <text name="HomePage" value="Home page" />
-    <text name="Orders" value="Order"/>
+    <text name="Orders" value="Orders"/>
     <text name="Products" value="Products"/>
     <text name="Customers" value="Customers"/>
     <text name="About" value="About" />

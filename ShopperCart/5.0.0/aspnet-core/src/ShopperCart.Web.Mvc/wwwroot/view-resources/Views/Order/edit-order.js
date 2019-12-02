@@ -1,4 +1,5 @@
 ﻿var TempProduct = [];
+var breakCount = 0;
 
 function EditOrders(id) {
 
@@ -107,4 +108,112 @@ function Confirm() {
             console.log(jqXhr, textStatus, errorThrown);
         }
     });
+}
+
+function EraseChanges() {
+    TempProduct = [];
+    document.getElementById("SaveChanges").hidden = true;
+}
+
+function PlaceNewOrder() {
+
+    var temp = document.getElementById("productId");
+    var productId = temp.options[temp.selectedIndex].value;
+    var productName = temp.options[temp.selectedIndex].textContent;
+    var description = document.getElementById("descriptionText").value;
+    var unitprice = document.getElementById("UnitPriceText").value;
+    var quantity = document.getElementById("QuantityText").value;
+
+    var orderItems = {
+        Id: 0,
+        ProductId: 0,
+        UnitPrice: 0,
+        Quantity: 0,
+        OrderId: 0
+    };
+
+    var exist = false;
+
+    for (var i = 0; i < TempProduct.length; i++) {
+
+        var existing = TempProduct[i].productId;
+
+        if (parseInt(existing) == parseInt(productId)) {
+
+            var tempQuantity = parseInt(TempProduct[i].quantity);
+            var existingQuantity = parseInt(quantity);
+
+            var tempTotal = tempQuantity + existingQuantity;
+
+            TempProduct[i].quantity = parseInt(tempTotal);
+            exist = true;
+            break;
+        }
+
+    }
+
+    if (TempProduct.length == 0) {
+        TempProduct.push(orderItems);
+    } else if (exist == false) {
+        TempProduct.push(orderItems);
+        console.log(orderItems);
+    }
+
+    CreateTableRow(productName, description, unitprice, quantity);
+}
+
+function CreateTableRow(productName, description, unitPrice, quantity) {
+
+    var linkBreaker = document.getElementById("linkBreaker");
+    var table = document.getElementById("tableForm");
+    var deleteBtn = document.createElement("input");
+    var editBtn = document.createElement("input");
+    var quantityText = document.createElement("input");
+
+    deleteBtn.setAttribute('type', 'button');
+    deleteBtn.setAttribute('value', 'Delete');
+    deleteBtn.classList.add("btn");
+    deleteBtn.classList.add("btn-sm");
+    deleteBtn.classList.add("btn-danger");
+
+    editBtn.setAttribute('type', 'button');
+    editBtn.setAttribute('value', 'Edit');
+    editBtn.classList.add("btn");
+    editBtn.classList.add("btn-sm");
+    editBtn.classList.add("btn-warning");
+    deleteBtn.classList.add("margin-left");
+
+    quantityText.setAttribute('type', 'number');
+    quantityText.classList.add('form-control');
+    quantityText.classList.add('col-md-6');
+    quantityText.disabled = true;
+
+    if (breakCount == 0) {
+        var row = table.insertRow(0);
+        var lineBreak = document.createElement("br");
+        var breakerCell = row.insertCell(0);
+        breakerCell.appendChild(lineBreak);
+    }
+    breakCount++;
+
+    var row = table.insertRow(1);
+    var productNameCell = row.insertCell(0);
+    var descriptionCell = row.insertCell(1);
+    descriptionCell.colSpan = 2;
+    var unitpriceCell = row.insertCell(2);
+    var quantityCell = row.insertCell(3);
+    var totalCell = row.insertCell(4);
+    var editBtnCell = row.insertCell(5);
+    var deleteBtnCell = row.insertCell(6);
+
+    deleteBtnCell.appendChild(deleteBtn);
+    editBtnCell.appendChild(editBtn);
+    quantityCell.appendChild(quantityText);
+
+    productNameCell.innerHTML = productName;
+    descriptionCell.innerHTML = description;
+    unitpriceCell.innerHTML = "Rs: " + unitPrice;
+    quantityText.value = quantity;
+    totalCell.innerHTML = "Rs: " + parseInt(quantity) * parseInt(unitPrice);
+    editBtnCell.appendChild(editBtn);
 }

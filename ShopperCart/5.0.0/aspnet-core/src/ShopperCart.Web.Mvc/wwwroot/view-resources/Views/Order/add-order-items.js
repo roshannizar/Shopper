@@ -65,10 +65,8 @@ function CreateOrderLine() {
 
         if (products.length == 0) {
             products.push(orderLine);
-            console.log(products);
         } else if (exist == false) {
             products.push(orderLine);
-            console.log(products);
         }
 
         total = total + (parseInt(quantity) * parseInt(unitPrice));
@@ -130,13 +128,14 @@ function CreateTableRow(productName, description, unitPrice, quantity) {
     deleteBtn.setAttribute('value', 'Delete');
     deleteBtn.classList.add("btn");
     deleteBtn.classList.add("btn-sm");
-    deleteBtn.classList.add("btn-outline-danger");
+    deleteBtn.classList.add("btn-danger");
+    deleteBtn.classList.add("margin-left");
 
     editBtn.setAttribute('type', 'button');
     editBtn.setAttribute('value', 'Edit');
     editBtn.classList.add("btn");
     editBtn.classList.add("btn-sm");
-    editBtn.classList.add("btn-outline-warning");
+    editBtn.classList.add("btn-warning");
 
     quantityText.setAttribute('type', 'number');
     quantityText.classList.add('form-control');
