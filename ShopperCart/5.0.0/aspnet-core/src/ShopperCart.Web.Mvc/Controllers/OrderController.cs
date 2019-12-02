@@ -73,7 +73,7 @@ namespace ShopperCart.Web.Mvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult OrderDetail(int id)
+        public IActionResult ShowOrder(int id)
         {
             try
             {
@@ -99,11 +99,12 @@ namespace ShopperCart.Web.Mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult OrderDelete(int id)
+        public IActionResult RemoveOrder(int id)
         {
             try
             {
-                orderService.DeleteOrder(id);
+                //Removing the order
+                orderService.RemoveOrder(id);
                 TempData["Message"] = "You have deleted the order Ref No: " + id + " successfully!";
                 return RedirectToAction("Index", "Order");
             }
@@ -115,13 +116,14 @@ namespace ShopperCart.Web.Mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult OrderEdit([FromBody]OrderViewModel orderViewModel)
+        public IActionResult UpdateOrder([FromBody]OrderViewModel orderViewModel)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return View("OrderEdit");
 
+                //Before updating the order, check the whether order item is less than zero
                 if (!(orderViewModel.OrderItems.Count > 0))
                     return RedirectToAction("Index");
 

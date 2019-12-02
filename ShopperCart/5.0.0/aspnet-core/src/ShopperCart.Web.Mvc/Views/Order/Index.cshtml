@@ -44,9 +44,9 @@
                             <i class="material-icons">menu</i>
                         </a>
                         <ul class="dropdown-menu pull-right">
-                            <li><a class="waves-effect waves-block edit-tenant" asp-controller="Order" asp-action="OrderDetail" asp-route-Id="@order.Id"><i class="material-icons">edit</i>@L("Edit")</a></li>
+                            <li><a class="waves-effect waves-block edit-tenant" asp-controller="Order" asp-action="ShowOrder" asp-route-Id="@order.Id"><i class="material-icons">edit</i>@L("Edit")</a></li>
                             <li>
-                                <form method="post" asp-controller="Order" asp-action="OrderDelete" asp-route-Id="@order.Id">
+                                <form method="post" asp-controller="Order" asp-action="RemoveOrder" asp-route-Id="@order.Id">
                                     <input type="submit" class="btn btn-secondary waves-effect waves-block delete-tenant glyphicon glyphicon-trash" value="Remove" />
                                 </form>
                             </li>

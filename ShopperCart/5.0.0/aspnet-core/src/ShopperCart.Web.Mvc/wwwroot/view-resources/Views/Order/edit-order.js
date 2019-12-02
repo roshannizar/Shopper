@@ -70,8 +70,8 @@ function ConfirmOrderChanges() {
     orderItems.Quantity = parseInt(document.getElementById("Quantity").value);
     orderItems.OrderId = parseInt(document.getElementById("orderId").value);
     document.getElementById("updatedQuantity " + orderItems.Id).textContent = "Quantity: " + orderItems.Quantity;
-    document.getElementById("updateTotalAmount " + orderItems.Id)
-        .textContent = "Total Amount: Rs: " + (parseInt(document.getElementById("Quantity").value) *
+    document.getElementById("updateTotalAmount " + orderItems.Id).textContent = "Total Amount: Rs: " +
+            (parseInt(document.getElementById("Quantity").value) *
             parseInt(document.getElementById("UnitPrice").value));
     document.getElementById("EditBtn " + orderItems.Id).value = "Undo Edit";
 
@@ -94,7 +94,7 @@ function Confirm() {
     order.Date = currentDate.replace(/^"(.*)"$/, '$1');
 
     $.ajax({
-        url: '../OrderEdit',
+        url: '../UpdateOrder',
         dataType: 'json',
         type: 'post',
         contentType: 'application/json',

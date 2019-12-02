@@ -38,7 +38,7 @@ namespace ShopperCart.Order
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
-
+                
                 OrderDto orderDtoTemp = new OrderDto(orderDto.CustomerId, orderDto.Date, orderDto.OrderItems, orderDto.Status);
                 var order = mapper.Map<Models.Order>(orderDtoTemp);
                 //This method will add orderlines as well, since this entity has the orderline list
@@ -51,7 +51,7 @@ namespace ShopperCart.Order
             }
         }
 
-        public void DeleteOrder(int id)
+        public void RemoveOrder(int id)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace ShopperCart.Order
                     if (item.Quantity == 0)
                     {
                         //If the quantity is zero the order item is deleted
-                        DeleteOrderLine(tempOrderLine);
+                        RemoveOrderLine(tempOrderLine);
                     }
                     else
                     {
@@ -128,7 +128,7 @@ namespace ShopperCart.Order
             }
         }
 
-        private void DeleteOrderLine(Models.OrderLine orderLine)
+        private void RemoveOrderLine(Models.OrderLine orderLine)
         {
             if (orderLine == null)
                 throw new OrderLineNotFoundException();

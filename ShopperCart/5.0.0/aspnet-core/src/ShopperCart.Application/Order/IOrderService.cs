@@ -12,6 +12,6 @@ namespace ShopperCart.Order
         OrderDto GetOrderById(int id);
         void CreateOrder(OrderDto order);
         void UpdateOrder(OrderDto orderBOs);
-        void DeleteOrder(int id);
+        void RemoveOrder(int id);
     }
 }

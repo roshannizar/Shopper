@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "OrderDetail";
+    ViewData["Title"] = "Order Details";
 }
 <h3>Order</h3>
 <a class="btn btn-outline-secondary btn-sm" asp-controller="Order" asp-action="Index">Back</a>
@@ -14,6 +14,10 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>Order Items</h4>
+    </div>
+    <br />
+    <div class="container-fluid">
+        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createOrderModal">Add New Item</button>
     </div>
     @foreach (var items in Model.OrderItems)
     {
