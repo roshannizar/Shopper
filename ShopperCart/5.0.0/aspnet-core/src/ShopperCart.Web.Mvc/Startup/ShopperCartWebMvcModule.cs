@@ -5,7 +5,7 @@ using Abp.Reflection.Extensions;
 using ShopperCart.Configuration;
 using Abp.AutoMapper;
 using ShopperCart.Web.Models.Product;
-using ShopperCart.Product.Dto;
+using ShopperCart.Product.BusinessObject;
 
 namespace ShopperCart.Web.Startup
 {

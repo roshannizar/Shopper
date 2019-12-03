@@ -1,4 +1,4 @@
-﻿using ShopperCart.Customers.Dto;
+﻿using ShopperCart.Customer.BusinessObject;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +6,6 @@ namespace ShopperCart.Customer
 {
     public interface ICustomerService
     {
-        IEnumerable<CustomerDto> GetCustomers();
+        IEnumerable<CustomerBO> GetCustomers();
     }
 }

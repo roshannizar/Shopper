@@ -6,7 +6,7 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using ShopperCart.Order.Dto;
+using ShopperCart.Order.BusinessObject;
 using ShopperCart.Product;
 
 namespace ShopperCart.Order
@@ -29,18 +29,18 @@ namespace ShopperCart.Order
             productService = new ProductService(productRepository, mapper, unitOfWork);
         }
 
-        public void CreateOrder(OrderDto orderDto)
+        public void CreateOrder(OrderBO orderBO)
         {
             try
             {
-                foreach (var item in orderDto.OrderItems)
+                foreach (var item in orderBO.OrderItems)
                 {
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
                 
-                OrderDto orderDtoTemp = new OrderDto(orderDto.CustomerId, orderDto.Date, orderDto.OrderItems, orderDto.Status);
-                var order = mapper.Map<Models.Order>(orderDtoTemp);
+                OrderBO orderBOTemp = new OrderBO(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
+                var order = mapper.Map<Models.Order>(orderBOTemp);
                 //This method will add orderlines as well, since this entity has the orderline list
                 orderRepository.Insert(order);
                 unitOfWork.SaveChanges();
@@ -55,12 +55,12 @@ namespace ShopperCart.Order
         {
             try
             {
-                var orderDto = orderRepository.Get(id);
+                var orderBO = orderRepository.Get(id);
 
-                if (orderDto == null)
+                if (orderBO == null)
                     throw new OrderNotFoundException();
 
-                var order = mapper.Map<Models.Order>(orderDto);
+                var order = mapper.Map<Models.Order>(orderBO);
                 //Checks the status type
                 if (order.Status == Models.StatusType.Completed)
                 {
@@ -89,16 +89,16 @@ namespace ShopperCart.Order
             }
         }
 
-        public void UpdateOrder(OrderDto orderDtos)
+        public void UpdateOrder(OrderBO orderBO)
         {
             try
             {
-                foreach (var item in orderDtos.OrderItems)
+                foreach (var item in orderBO.OrderItems)
                 {                    
                     if (item.Id != 0)
                     {
                         //Retrieving the orderline as temporary to check the database quantity
-                        UpdateOrderWithProduct(orderDtos, item);
+                        UpdateOrderWithProduct(orderBO, item);
                     }
                     else
                     {
@@ -114,10 +114,10 @@ namespace ShopperCart.Order
             }
         }
 
-        private void UpdateOrderWithProduct(OrderDto orderDtos, OrderLineDto item)
+        private void UpdateOrderWithProduct(OrderBO orderBO, OrderLineBO item)
         {
             var tempOrderLine = orderItemRepository.Get(item.Id);
-            OrderDto orderdto = new OrderDto();
+            OrderBO orderbo = new OrderBO();
 
             //Identifying the difference between the updated orderline and database quantity
             var tempDifference = tempOrderLine.Quantity - item.Quantity;
@@ -125,7 +125,7 @@ namespace ShopperCart.Order
             tempOrderLine.Quantity = item.Quantity;
 
             //Validating the order
-            if (orderdto.ValidateOrderItems(item, orderDtos))
+            if (orderbo.ValidateOrderItems(item, orderBO))
             {
                 if (item.Quantity == 0)
                 {
@@ -149,28 +149,28 @@ namespace ShopperCart.Order
             }
         }
 
-        private void InsertOrUpdateOrderLine(OrderLineDto item)
+        private void InsertOrUpdateOrderLine(OrderLineBO orderLineBO)
         {
             var orderTemp = orderRepository.GetAllIncluding()
                                             .Include(i => i.OrderItems)
                                                 .ThenInclude(i => i.Products)
-                                                    .Include(i => i.Customers)
-                                                    .FirstOrDefault(o => o.Id == item.OrderId);
+                                                .Include(i => i.Customers)
+                                                .FirstOrDefault(o => o.Id == orderLineBO.OrderId);
 
-            var getOrderItem = orderTemp.OrderItems.Find(p => p.ProductId == item.ProductId);
+            var getOrderItem = orderTemp.OrderItems.Find(p => p.ProductId == orderLineBO.ProductId);
 
             if (getOrderItem != null)
             {
-                item.Id = getOrderItem.Id;
-                item.Quantity = getOrderItem.Quantity + item.Quantity;
-                var order = mapper.Map<OrderDto>(orderTemp);
-                UpdateOrderWithProduct(order,item);
+                orderLineBO.Id = getOrderItem.Id;
+                orderLineBO.Quantity = getOrderItem.Quantity + orderLineBO.Quantity;
+                var order = mapper.Map<OrderBO>(orderTemp);
+                UpdateOrderWithProduct(order, orderLineBO);
             }
             else
             {
-                productService.Update(item.ProductId,item.Quantity);
+                productService.Update(orderLineBO.ProductId, orderLineBO.Quantity);
 
-                var orderItem = mapper.Map<Models.OrderLine>(item);
+                var orderItem = mapper.Map<Models.OrderLine>(orderLineBO);
                 orderItemRepository.Insert(orderItem);
                 unitOfWork.SaveChanges();
             }
@@ -184,12 +184,16 @@ namespace ShopperCart.Order
             unitOfWork.SaveChanges();
         }
 
-        public OrderDto GetOrderById(int id)
+        public OrderBO GetOrderById(int id)
         {
             try
             {
-                var orders = orderRepository.GetAllIncluding().Include(i => i.OrderItems).ThenInclude(i => i.Products).Include(i => i.Customers).FirstOrDefault(o => o.Id == id);
-                var query = mapper.Map<OrderDto>(orders);
+                var orders = orderRepository.GetAllIncluding()
+                                                .Include(i => i.OrderItems)
+                                                    .ThenInclude(i => i.Products)
+                                                    .Include(i => i.Customers)
+                                                    .FirstOrDefault(o => o.Id == id);
+                var query = mapper.Map<OrderBO>(orders);
                 return query;
             }
             catch (Exception ex)
@@ -198,7 +202,7 @@ namespace ShopperCart.Order
             }
         }
 
-        public IEnumerable<OrderDto> GetOrders()
+        public IEnumerable<OrderBO> GetOrders()
         {
             try
             {
@@ -206,7 +210,7 @@ namespace ShopperCart.Order
 
                 if (orders != null)
                 {
-                    var query = mapper.Map<IEnumerable<OrderDto>>(orders);
+                    var query = mapper.Map<IEnumerable<OrderBO>>(orders);
                     return query;
                 }
                 else

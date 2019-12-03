@@ -5,7 +5,7 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using AutoMapper;
 using ShopperCart.Customer;
-using ShopperCart.Product.Dto;
+using ShopperCart.Product.BusinessObject;
 
 
 namespace ShopperCart.Product
@@ -23,7 +23,7 @@ namespace ShopperCart.Product
             this.unitOfWork = unitOfWork;
         }
 
-        public void Create(ProductDto productDto)
+        public void Create(ProductBO productDto)
         {
             try
             {
@@ -44,12 +44,12 @@ namespace ShopperCart.Product
             }
         }
 
-        public ProductDto GetProduct(int id)
+        public ProductBO GetProduct(int id)
         {
             try
             {
                 var query = repository.Get(id);
-                return mapper.Map<ProductDto>(query);
+                return mapper.Map<ProductBO>(query);
             }
             catch (ProductNotFoundException)
             {
@@ -57,10 +57,10 @@ namespace ShopperCart.Product
             }
         }
 
-        public IEnumerable<ProductDto> GetProducts()
+        public IEnumerable<ProductBO> GetProducts()
         {
             var product = repository.GetAll();
-            var query = mapper.Map<IEnumerable<ProductDto>>(product);
+            var query = mapper.Map<IEnumerable<ProductBO>>(product);
             return query;
         }
 
@@ -70,18 +70,25 @@ namespace ShopperCart.Product
             {
                 var productBO = repository.Get(productId);
 
-                if (productBO != null)
+                if (productBO.Quantity > 0)
                 {
-                    productBO.Quantity = productBO.Quantity + quantity;
-                }
-                else
-                {
-                    throw new ProductNotFoundException();
-                }
 
-                var product = mapper.Map<Models.Product>(productBO);
-                repository.Update(product);
-                unitOfWork.SaveChanges();
+                    if (productBO != null)
+                    {
+                        productBO.Quantity = productBO.Quantity + quantity;
+                    }
+                    else
+                    {
+                        throw new ProductNotFoundException();
+                    }
+
+                    var product = mapper.Map<Models.Product>(productBO);
+                    repository.Update(product);
+                    unitOfWork.SaveChanges();
+                }else
+                {
+                    throw new InAdequateProductQuantityException();
+                }
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿using ShopperCart.Product.Dto;
+﻿using ShopperCart.Product.BusinessObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +8,9 @@ namespace ShopperCart.Product
 {
     public interface IProductService
     {
-        IEnumerable<ProductDto> GetProducts();
-        ProductDto GetProduct(int id);
-        void Create(ProductDto product);
+        IEnumerable<ProductBO> GetProducts();
+        ProductBO GetProduct(int id);
+        void Create(ProductBO product);
         void Update(int productId, int quantity);
     }
 }

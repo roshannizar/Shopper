@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using ShopperCart.Customers.Dto;
-using ShopperCart.Order.Dto;
-using ShopperCart.Product.Dto;
+using ShopperCart.Customer.BusinessObject;
+using ShopperCart.Order.BusinessObject;
+using ShopperCart.Product.BusinessObject;
 using ShopperCart.Web.Models.Customer;
 using ShopperCart.Web.Models.Order;
 using ShopperCart.Web.Models.Product;
@@ -16,11 +16,11 @@ namespace ShopperCart.Web.AutoMapper
     {
         public ViewModelMapper()
         {
-            CreateMap<ProductViewModel, ProductDto>().ReverseMap();
-            CreateMap<OrderViewModel, OrderDto>().ReverseMap();
-            CreateMap<OrderLineViewModel, OrderLineDto>().ReverseMap();
+            CreateMap<ProductViewModel, ProductBO>().ReverseMap();
+            CreateMap<OrderViewModel, OrderBO>().ReverseMap();
+            CreateMap<OrderLineViewModel, OrderLineBO>().ReverseMap();
             CreateMap<OrderViewModel, OrderLineViewModel>().ReverseMap();
-            CreateMap<CustomerViewModel, CustomerDto>().ReverseMap();
+            CreateMap<CustomerViewModel, CustomerBO>().ReverseMap();
         }
     }
 }

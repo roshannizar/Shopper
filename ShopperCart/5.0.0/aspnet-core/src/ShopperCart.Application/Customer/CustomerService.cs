@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Abp.Domain.Repositories;
 using AutoMapper;
-using ShopperCart.Customers.Dto;
+using ShopperCart.Customer.BusinessObject;
 
 namespace ShopperCart.Customer
 {
@@ -19,11 +19,11 @@ namespace ShopperCart.Customer
             this.mapper = mapper;
         }
 
-        public IEnumerable<CustomerDto> GetCustomers()
+        public IEnumerable<CustomerBO> GetCustomers()
         {
             var customer = repository.GetAll();
 
-            var query = mapper.Map<IEnumerable<CustomerDto>>(customer);
+            var query = mapper.Map<IEnumerable<CustomerBO>>(customer);
             return query;
         }
     }

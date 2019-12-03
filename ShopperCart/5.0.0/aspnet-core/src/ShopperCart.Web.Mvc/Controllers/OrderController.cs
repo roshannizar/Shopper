@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopperCart.Controllers;
 using ShopperCart.Customer;
 using ShopperCart.Order;
-using ShopperCart.Order.Dto;
+using ShopperCart.Order.BusinessObject;
 using ShopperCart.Product;
 using ShopperCart.Web.Models.Order;
 
@@ -58,7 +58,7 @@ namespace ShopperCart.Web.Mvc.Controllers
             try
             {
                 orderViewModel.Status = StatusTypeViewModel.Pending;
-                var order = ObjectMapper.Map<OrderDto>(orderViewModel);
+                var order = ObjectMapper.Map<OrderBO>(orderViewModel);
                 //Create Order
                 orderService.CreateOrder(order);
 
@@ -133,7 +133,7 @@ namespace ShopperCart.Web.Mvc.Controllers
                 if (!(orderViewModel.OrderItems.Count > 0))
                     return RedirectToAction("Index");
 
-                var order = ObjectMapper.Map<OrderDto>(orderViewModel);
+                var order = ObjectMapper.Map<OrderBO>(orderViewModel);
                 orderService.UpdateOrder(order);
 
                 TempData["Message"] = "Save changes made for order Ref No: " +
