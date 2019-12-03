@@ -32,5 +32,18 @@ namespace ShopperCart.Order.Dto
             this.OrderItems = orderLineDtos;
             this.Status = status;
         }
+
+        public bool ValidateOrderItems(OrderLineDto orderLineDto, OrderDto orderDto)
+        {
+            foreach(var items in orderDto.OrderItems)
+            {
+                if(orderLineDto.ProductId == items.ProductId && orderLineDto.UnitPrice == items.UnitPrice)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿var TempProduct = [];
 var breakCount = 0;
+var rowCount = 1;
 
 function EditOrders(id) {
 
@@ -76,7 +77,29 @@ function ConfirmOrderChanges() {
             parseInt(document.getElementById("UnitPrice").value));
     document.getElementById("EditBtn " + orderItems.Id).value = "Undo Edit";
 
-    TempProduct.push(orderItems);
+    var exist = false;
+
+    for (var i = 0; i < TempProduct.length; i++) {
+
+        var existing = TempProduct[i].ProductId;
+
+        if (parseInt(existing) === parseInt(orderItems.ProductId)) {
+
+            var tempQuantity = parseInt(TempProduct[i].Quantity);
+            var existingQuantity = parseInt(orderItems.Quantity);
+            var tempTotal = tempQuantity + existingQuantity;
+            TempProduct[i].Quantity = parseInt(tempTotal);
+            exist = true;
+            break;
+        }
+
+    }
+
+    if (TempProduct.length == 0) {
+        TempProduct.push(orderItems);
+    } else if (exist == false) {
+        TempProduct.push(orderItems);
+    }
 
     document.getElementById("SaveChanges").hidden = false;
 }
@@ -113,9 +136,10 @@ function Confirm() {
 function EraseChanges() {
     TempProduct = [];
     document.getElementById("SaveChanges").hidden = true;
+    alert("Save changes removed successfully");
 }
 
-function PlaceNewOrder() {
+function PlaceNewOrder(id) {
 
     var temp = document.getElementById("productId");
     var productId = temp.options[temp.selectedIndex].value;
@@ -132,20 +156,27 @@ function PlaceNewOrder() {
         OrderId: 0
     };
 
+    orderItems.ProductId = parseInt(productId);
+    orderItems.UnitPrice = parseInt(unitprice);
+    orderItems.Quantity = parseInt(quantity);
+    orderItems.OrderId = parseInt(id);
     var exist = false;
 
     for (var i = 0; i < TempProduct.length; i++) {
 
-        var existing = TempProduct[i].productId;
+        var existing = TempProduct[i].ProductId;
 
-        if (parseInt(existing) == parseInt(productId)) {
+        if (parseInt(existing) === parseInt(productId)) {
 
-            var tempQuantity = parseInt(TempProduct[i].quantity);
+            var unitPriceValue = TempProduct[i].UnitPrice;
+            var tempQuantity = parseInt(TempProduct[i].Quantity);
             var existingQuantity = parseInt(quantity);
-
             var tempTotal = tempQuantity + existingQuantity;
 
-            TempProduct[i].quantity = parseInt(tempTotal);
+            document.getElementById("qty" + (i + 1)).value = tempTotal;
+            document.getElementById("tableForm").rows[i + 1].cells[4].innerHTML = "Rs: " + (parseInt(tempTotal) * parseInt(unitPriceValue));
+
+            TempProduct[i].Quantity = parseInt(tempTotal);
             exist = true;
             break;
         }
@@ -154,12 +185,13 @@ function PlaceNewOrder() {
 
     if (TempProduct.length == 0) {
         TempProduct.push(orderItems);
+        CreateTableRow(productName, description, unitprice, quantity);
+        rowCount++;
     } else if (exist == false) {
         TempProduct.push(orderItems);
-
+        CreateTableRow(productName, description, unitprice, quantity);
+        rowCount++;
     }
-
-    CreateTableRow(productName, description, unitprice, quantity);
 }
 
 function CreateTableRow(productName, description, unitPrice, quantity) {
@@ -183,19 +215,23 @@ function CreateTableRow(productName, description, unitPrice, quantity) {
     deleteBtn.classList.add("margin-left");
 
     quantityText.setAttribute('type', 'number');
+    quantityText.setAttribute('id', 'qty' + rowCount);
     quantityText.classList.add('form-control');
     quantityText.classList.add('col-md-6');
     quantityText.disabled = true;
 
     if (breakCount == 0) {
         var row = table.insertRow(0);
-        var lineBreak = document.createElement("br");
+        var lineBreak = document.createElement("span");
+        lineBreak.classList.add("badge");
+        lineBreak.classList.add("label-primary");
         var breakerCell = row.insertCell(0);
         breakerCell.appendChild(lineBreak);
+        breakerCell.innerHTML = "Newly Added Item(s)";
     }
     breakCount++;
 
-    var row = table.insertRow(1);
+    var row = table.insertRow(rowCount);
     var productNameCell = row.insertCell(0);
     var descriptionCell = row.insertCell(1);
     descriptionCell.colSpan = 2;

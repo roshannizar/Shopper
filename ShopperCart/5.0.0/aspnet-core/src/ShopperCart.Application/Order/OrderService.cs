@@ -93,38 +93,86 @@ namespace ShopperCart.Order
         {
             try
             {
-
                 foreach (var item in orderDtos.OrderItems)
-                {
-                    //Retrieving the orderline as temporary to check the database quantity
-                    var tempOrderLine = orderItemRepository.Get(item.Id);
-
-                    //Identifying the difference between the updated orderline and database quantity
-                    var tempDifference = tempOrderLine.Quantity - item.Quantity;
-
-                    //setting the quantity
-                    tempOrderLine.Quantity = item.Quantity;
-
-                    if (item.Quantity == 0)
+                {                    
+                    if (item.Id != 0)
                     {
-                        //If the quantity is zero the order item is deleted
-                        RemoveOrderLine(tempOrderLine);
+                        //Retrieving the orderline as temporary to check the database quantity
+                        UpdateOrderWithProduct(orderDtos, item);
                     }
                     else
                     {
-                        //updates the orderline
-                        var order = mapper.Map<Models.OrderLine>(tempOrderLine);
-                        orderItemRepository.Update(order);
-                        unitOfWork.SaveChanges();
+                        //When the order item doesn't have an id or doesnt know the id of adding the exisitng item, 
+                        //this method loads
+                        InsertOrUpdateOrderLine(item);
                     }
-
-                    //updates the difference quantity
-                    productService.Update(item.ProductId, tempDifference);
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        private void UpdateOrderWithProduct(OrderDto orderDtos, OrderLineDto item)
+        {
+            var tempOrderLine = orderItemRepository.Get(item.Id);
+            OrderDto orderdto = new OrderDto();
+
+            //Identifying the difference between the updated orderline and database quantity
+            var tempDifference = tempOrderLine.Quantity - item.Quantity;
+            //setting the quantity
+            tempOrderLine.Quantity = item.Quantity;
+
+            //Validating the order
+            if (orderdto.ValidateOrderItems(item, orderDtos))
+            {
+                if (item.Quantity == 0)
+                {
+                    //If the quantity is zero the order item is deleted
+                    RemoveOrderLine(tempOrderLine);
+                }
+                else
+                {
+                    //updates the orderline
+                    var order = mapper.Map<Models.OrderLine>(tempOrderLine);
+                    orderItemRepository.Update(order);
+                    unitOfWork.SaveChanges();
+                }
+
+                //updates the difference quantity
+                productService.Update(item.ProductId, tempDifference);
+            }
+            else
+            {
+                throw new Exception("Order has been modified outside!");
+            }
+        }
+
+        private void InsertOrUpdateOrderLine(OrderLineDto item)
+        {
+            var orderTemp = orderRepository.GetAllIncluding()
+                                            .Include(i => i.OrderItems)
+                                                .ThenInclude(i => i.Products)
+                                                    .Include(i => i.Customers)
+                                                    .FirstOrDefault(o => o.Id == item.OrderId);
+
+            var getOrderItem = orderTemp.OrderItems.Find(p => p.ProductId == item.ProductId);
+
+            if (getOrderItem != null)
+            {
+                item.Id = getOrderItem.Id;
+                item.Quantity = getOrderItem.Quantity + item.Quantity;
+                var order = mapper.Map<OrderDto>(orderTemp);
+                UpdateOrderWithProduct(order,item);
+            }
+            else
+            {
+                productService.Update(item.ProductId,item.Quantity);
+
+                var orderItem = mapper.Map<Models.OrderLine>(item);
+                orderItemRepository.Insert(orderItem);
+                unitOfWork.SaveChanges();
             }
         }
 
