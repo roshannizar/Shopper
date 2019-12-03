@@ -17,5 +17,6 @@ namespace ShopperCart.Models
         public DateTime Date { get; set; }
         [Required]
         public StatusType Status { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -33,14 +33,27 @@ namespace ShopperCart.Order
         {
             try
             {
+                OrderBO orderBOTemp = new OrderBO(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
+
+                //validate the orderItems
+                foreach (var orderItem in orderBO.OrderItems)
+                {
+                    var product = productService.GetProduct(orderItem.ProductId).UnitPrice;
+                    var result = orderBOTemp.ValidateOrderItems(orderItem, product);
+
+                    if (!(result))
+                        break;
+                }
+
                 foreach (var item in orderBO.OrderItems)
                 {
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
+
                 
-                OrderBO orderBOTemp = new OrderBO(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
                 var order = mapper.Map<Models.Order>(orderBOTemp);
+
                 //This method will add orderlines as well, since this entity has the orderline list
                 orderRepository.Insert(order);
                 unitOfWork.SaveChanges();
@@ -97,7 +110,7 @@ namespace ShopperCart.Order
                 {                    
                     if (item.Id != 0)
                     {
-                        //Retrieving the orderline as temporary to check the database quantity
+                        //updating order and product
                         UpdateOrderWithProduct(orderBO, item);
                     }
                     else
@@ -116,6 +129,7 @@ namespace ShopperCart.Order
 
         private void UpdateOrderWithProduct(OrderBO orderBO, OrderLineBO item)
         {
+            //Retrieving the orderline as temporary to check the database quantity
             var tempOrderLine = orderItemRepository.Get(item.Id);
             OrderBO orderbo = new OrderBO();
 
@@ -124,29 +138,21 @@ namespace ShopperCart.Order
             //setting the quantity
             tempOrderLine.Quantity = item.Quantity;
 
-            //Validating the order
-            if (orderbo.ValidateOrderItems(item, orderBO))
+            if (item.Quantity == 0)
             {
-                if (item.Quantity == 0)
-                {
-                    //If the quantity is zero the order item is deleted
-                    RemoveOrderLine(tempOrderLine);
-                }
-                else
-                {
-                    //updates the orderline
-                    var order = mapper.Map<Models.OrderLine>(tempOrderLine);
-                    orderItemRepository.Update(order);
-                    unitOfWork.SaveChanges();
-                }
-
-                //updates the difference quantity
-                productService.Update(item.ProductId, tempDifference);
+                //If the quantity is zero the order item is deleted
+                RemoveOrderLine(tempOrderLine);
             }
             else
             {
-                throw new Exception("Order has been modified outside!");
+                //updates the orderline
+                var order = mapper.Map<Models.OrderLine>(tempOrderLine);
+                orderItemRepository.Update(order);
+                unitOfWork.SaveChanges();
             }
+
+            //updates the difference quantity
+            productService.Update(item.ProductId, tempDifference);
         }
 
         private void InsertOrUpdateOrderLine(OrderLineBO orderLineBO)
@@ -155,7 +161,7 @@ namespace ShopperCart.Order
                                             .Include(i => i.OrderItems)
                                                 .ThenInclude(i => i.Products)
                                                 .Include(i => i.Customers)
-                                                .FirstOrDefault(o => o.Id == orderLineBO.OrderId);
+                                                .First(o => o.Id == orderLineBO.OrderId);
 
             var getOrderItem = orderTemp.OrderItems.Find(p => p.ProductId == orderLineBO.ProductId);
 
@@ -192,7 +198,7 @@ namespace ShopperCart.Order
                                                 .Include(i => i.OrderItems)
                                                     .ThenInclude(i => i.Products)
                                                     .Include(i => i.Customers)
-                                                    .FirstOrDefault(o => o.Id == id);
+                                                    .First(o => o.Id == id);
                 var query = mapper.Map<OrderBO>(orders);
                 return query;
             }

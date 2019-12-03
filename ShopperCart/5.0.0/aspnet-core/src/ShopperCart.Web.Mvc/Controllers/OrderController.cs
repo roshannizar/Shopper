@@ -28,8 +28,8 @@ namespace ShopperCart.Web.Mvc.Controllers
         }
         public IActionResult Index()
         {
-            var OrdersDto = orderService.GetOrders();
-            var model = ObjectMapper.Map<IEnumerable<OrderViewModel>>(OrdersDto);
+            var OrdersBO = orderService.GetOrders();
+            var model = ObjectMapper.Map<IEnumerable<OrderViewModel>>(OrdersBO);
             return View(model);
         }
 

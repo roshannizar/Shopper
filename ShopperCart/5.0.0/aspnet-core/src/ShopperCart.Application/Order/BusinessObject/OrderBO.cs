@@ -33,14 +33,11 @@ namespace ShopperCart.Order.BusinessObject
             this.Status = status;
         }
 
-        public bool ValidateOrderItems(OrderLineBO orderItemBO, OrderBO orderBO)
+        public bool ValidateOrderItems(OrderLineBO orderItemBO, double unitPrice)
         {
-            foreach(var items in orderBO.OrderItems)
+            if(orderItemBO.UnitPrice == unitPrice)
             {
-                if(orderItemBO.ProductId == items.ProductId && orderItemBO.UnitPrice == items.UnitPrice)
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;
