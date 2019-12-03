@@ -156,7 +156,7 @@ function PlaceNewOrder() {
         TempProduct.push(orderItems);
     } else if (exist == false) {
         TempProduct.push(orderItems);
-        console.log(orderItems);
+
     }
 
     CreateTableRow(productName, description, unitprice, quantity);
@@ -164,7 +164,6 @@ function PlaceNewOrder() {
 
 function CreateTableRow(productName, description, unitPrice, quantity) {
 
-    var linkBreaker = document.getElementById("linkBreaker");
     var table = document.getElementById("tableForm");
     var deleteBtn = document.createElement("input");
     var editBtn = document.createElement("input");

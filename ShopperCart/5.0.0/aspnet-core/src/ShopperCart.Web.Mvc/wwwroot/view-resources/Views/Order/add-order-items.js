@@ -1,6 +1,7 @@
 ﻿var products = [];
 var total = 0;
 var grandTotal = 0;
+var rowCount = 2;
 var d = new Date();
 var temp = JSON.stringify(d);
 var currentDate = temp.replace(/^"(.*)"$/, '$1');
@@ -37,7 +38,6 @@ function CreateOrderLine() {
     }
 
     if (products) {
-        CreateTableRow(productName, description, unitPrice, quantity);
         orderLine.productId = parseInt(productId);
         orderLine.unitPrice = parseInt(unitPrice);
         orderLine.quantity = parseInt(quantity);
@@ -49,13 +49,14 @@ function CreateOrderLine() {
 
             var existing = products[i].productId;
 
-            if (parseInt(existing) == parseInt(productId)) {
+            if (parseInt(existing) === parseInt(productId)) {
 
                 var tempQuantity = parseInt(products[i].quantity);
                 var existingQuantity = parseInt(quantity);
-
                 var tempTotal = tempQuantity + existingQuantity;
-
+                var unitPrice = products[i].unitPrice;
+                document.getElementById("qty"+(i+2)).value = tempTotal;
+                document.getElementById("tableForm").rows[i + 2].cells[4].innerHTML = (parseInt(tempTotal) * parseInt(unitPrice));
                 products[i].quantity = parseInt(tempTotal);
                 exist = true;
                 break;
@@ -65,8 +66,12 @@ function CreateOrderLine() {
 
         if (products.length == 0) {
             products.push(orderLine);
+            CreateTableRow(productName, description, unitPrice, quantity);
+            rowCount++;
         } else if (exist == false) {
             products.push(orderLine);
+            CreateTableRow(productName, description, unitPrice, quantity);
+            rowCount++;
         }
 
         total = total + (parseInt(quantity) * parseInt(unitPrice));
@@ -138,11 +143,12 @@ function CreateTableRow(productName, description, unitPrice, quantity) {
     editBtn.classList.add("btn-warning");
 
     quantityText.setAttribute('type', 'number');
+    quantityText.setAttribute('id', 'qty' + rowCount);
     quantityText.classList.add('form-control');
     quantityText.classList.add('col-md-6');
     quantityText.disabled = true;
 
-    var row = table.insertRow(2);
+    var row = table.insertRow(rowCount);
     var productNameCell = row.insertCell(0);
     var descriptionCell = row.insertCell(1);
     descriptionCell.colSpan = 2;
