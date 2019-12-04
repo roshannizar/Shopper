@@ -33,24 +33,13 @@ namespace ShopperCart.Order
         {
             try
             {
-                OrderBO orderBOTemp = new OrderBO(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
-
-                //validate the orderItems
-                foreach (var orderItem in orderBO.OrderItems)
-                {
-                    var product = productService.GetProduct(orderItem.ProductId).UnitPrice;
-                    var result = orderBOTemp.ValidateOrderItems(orderItem, product);
-
-                    if (!(result))
-                        break;
-                }
+                var orderBOTemp = orderBO.Create(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
 
                 foreach (var item in orderBO.OrderItems)
                 {
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
-
                 
                 var order = mapper.Map<Models.Order>(orderBOTemp);
 
@@ -111,7 +100,7 @@ namespace ShopperCart.Order
                     if (item.Id != 0)
                     {
                         //updating order and product
-                        UpdateOrderWithProduct(orderBO, item);
+                        UpdateOrderWithProduct(item);
                     }
                     else
                     {
@@ -127,11 +116,10 @@ namespace ShopperCart.Order
             }
         }
 
-        private void UpdateOrderWithProduct(OrderBO orderBO, OrderLineBO item)
+        private void UpdateOrderWithProduct(OrderLineBO item)
         {
             //Retrieving the orderline as temporary to check the database quantity
             var tempOrderLine = orderItemRepository.Get(item.Id);
-            OrderBO orderbo = new OrderBO();
 
             //Identifying the difference between the updated orderline and database quantity
             var tempDifference = tempOrderLine.Quantity - item.Quantity;

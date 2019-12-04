@@ -68,24 +68,24 @@ namespace ShopperCart.Product
         {
             try
             {
-                var productBO = repository.Get(productId);
+                var product = repository.Get(productId);
 
-                if (productBO.Quantity > 0)
+                if (product.Quantity > 0)
                 {
 
-                    if (productBO != null)
+                    if (product != null)
                     {
-                        productBO.Quantity = productBO.Quantity + quantity;
+                        product.Quantity = product.Quantity + quantity;
                     }
                     else
                     {
                         throw new ProductNotFoundException();
                     }
 
-                    var product = mapper.Map<Models.Product>(productBO);
                     repository.Update(product);
                     unitOfWork.SaveChanges();
-                }else
+                }
+                else
                 {
                     throw new InAdequateProductQuantityException();
                 }
