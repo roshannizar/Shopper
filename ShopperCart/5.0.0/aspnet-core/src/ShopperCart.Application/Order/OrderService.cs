@@ -157,29 +157,11 @@ namespace ShopperCart.Order
 
         private void InsertOrUpdateOrderLine(OrderLineBO orderLineBO)
         {
-            var orderTemp = orderRepository.GetAllIncluding()
-                                            .Include(i => i.OrderItems)
-                                                .ThenInclude(i => i.Products)
-                                                .Include(i => i.Customers)
-                                                .First(o => o.Id == orderLineBO.OrderId);
+            productService.Update(orderLineBO.ProductId, orderLineBO.Quantity);
 
-            var getOrderItem = orderTemp.OrderItems.Find(p => p.ProductId == orderLineBO.ProductId);
-
-            if (getOrderItem != null)
-            {
-                orderLineBO.Id = getOrderItem.Id;
-                orderLineBO.Quantity = getOrderItem.Quantity + orderLineBO.Quantity;
-                var order = mapper.Map<OrderBO>(orderTemp);
-                UpdateOrderWithProduct(order, orderLineBO);
-            }
-            else
-            {
-                productService.Update(orderLineBO.ProductId, orderLineBO.Quantity);
-
-                var orderItem = mapper.Map<Models.OrderLine>(orderLineBO);
-                orderItemRepository.Insert(orderItem);
-                unitOfWork.SaveChanges();
-            }
+            var orderItem = mapper.Map<Models.OrderLine>(orderLineBO);
+            orderItemRepository.Insert(orderItem);
+            unitOfWork.SaveChanges();
         }
 
         private void RemoveOrderLine(Models.OrderLine orderLine)

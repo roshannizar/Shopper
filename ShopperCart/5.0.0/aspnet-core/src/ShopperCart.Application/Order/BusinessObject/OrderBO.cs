@@ -1,5 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
+using ShopperCart.Customer;
 using ShopperCart.Customer.BusinessObject;
+using ShopperCart.Product.BusinessObject;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,35 +14,24 @@ namespace ShopperCart.Order.BusinessObject
     {
         public int Id { get; set; }
         public virtual List<OrderLineBO> OrderItems { get; set; }
-        public int CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
+        public int CustomerId;
+
         public virtual CustomerBO Customers { get; set; }
-        [Required]
         public DateTime Date { get; set; }
-        [Required]
-        public StatusTypeBO Status { get; set; }
+        public StatusTypeBO Status;
 
         public OrderBO()
         {
 
         }
 
-        public OrderBO(int customerId, DateTime dateTime, List<OrderLineBO> orderItemsBO, StatusTypeBO status)
+        public OrderBO Create(int customerId, DateTime dateTime, List<OrderLineBO> orderItemsBO, StatusTypeBO status)
         {
-            this.CustomerId = customerId;
-            this.Date = dateTime;
-            this.OrderItems = orderItemsBO;
-            this.Status = status;
-        }
-
-        public bool ValidateOrderItems(OrderLineBO orderItemBO, double unitPrice)
-        {
-            if(orderItemBO.UnitPrice == unitPrice)
-            {
-                return true;
-            }
-
-            return false;
+            CustomerId = customerId;
+            Date = dateTime;
+            OrderItems = orderItemsBO;
+            Status = status;
+            return this;
         }
     }
 }
