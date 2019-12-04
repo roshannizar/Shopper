@@ -29,10 +29,13 @@
     <div class="container-fluid">
         <table id="tableForm" class="table"></table>
     </div>
-    @foreach (var items in Model.OrderItems)
-    {
-        <partial name="_EditOrder" model="@items" />
-    }
+    <div id="panel1">
+        @foreach (var items in Model.OrderItems)
+        {
+
+            <partial name="_EditOrder" model="@items" />
+        }
+    </div>
 </div>
 
 <div class="modal fade" id="createNewOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
