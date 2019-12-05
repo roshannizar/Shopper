@@ -103,7 +103,7 @@ namespace ShopperCart.Order
                         var orderItemQuantity = orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id).Quantity;
                         var difference = orderItemQuantity - item.Quantity;
 
-                        if (item.Quantity == 0)
+                        if (item.IsDeleted)
                         {
                             //Remove the orderline
                             var orderItem = orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id);
