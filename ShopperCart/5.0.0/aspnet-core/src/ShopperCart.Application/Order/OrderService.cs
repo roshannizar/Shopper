@@ -15,16 +15,14 @@ namespace ShopperCart.Order
     {
         private readonly IRepository<Models.Order> orderRepository;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IRepository<Models.OrderLine> orderItemRepository;
         private readonly ProductService productService;
         private readonly IMapper mapper;
 
         public OrderService(IRepository<Models.Order> orderRepository, IRepository<Models.Product> productRepository
-            , IUnitOfWork unitOfWork, IRepository<Models.OrderLine> orderItemRepository, IMapper mapper)
+            , IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.orderRepository = orderRepository;
             this.unitOfWork = unitOfWork;
-            this.orderItemRepository = orderItemRepository;
             this.mapper = mapper;
             productService = new ProductService(productRepository, mapper, unitOfWork);
         }
@@ -57,12 +55,11 @@ namespace ShopperCart.Order
         {
             try
             {
-                var orderBO = orderRepository.Get(id);
+                var order = orderRepository.Get(id);
 
-                if (orderBO == null)
+                if (order == null)
                     throw new OrderNotFoundException();
 
-                var order = mapper.Map<Models.Order>(orderBO);
                 //Checks the status type
                 if (order.Status == Models.StatusType.Completed)
                 {
@@ -95,69 +92,43 @@ namespace ShopperCart.Order
         {
             try
             {
-                foreach (var item in orderBO.OrderItems)
+                var orderTemp = orderRepository.GetAllIncluding().Include(i => i.OrderItems).First(o => o.Id == orderBO.Id);
+
+                var order = mapper.Map<Models.Order>(orderBO);
+
+                foreach (var item in order.OrderItems.ToList())
                 {                    
                     if (item.Id != 0)
                     {
-                        //updating order and product
-                        UpdateOrderWithProduct(item);
+                        var orderItemQuantity = orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id).Quantity;
+                        var difference = orderItemQuantity - item.Quantity;
+
+                        if (item.Quantity == 0)
+                        {
+                            //Remove the orderline
+                            var orderItem = orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id);
+                            orderTemp.OrderItems.Remove(orderItem);
+                        }
+
+                        //updates the difference quantity
+                        productService.Update(item.ProductId, difference);
                     }
                     else
                     {
-                        //When the order item doesn't have an id or doesnt know the id of adding the exisitng item, 
-                        //this method loads
-                        InsertOrUpdateOrderLine(item);
+                        productService.Update(item.ProductId, item.Quantity);
+                        orderTemp.OrderItems.Add(item);
                     }
+
+                    //updates the order
+
+                    orderRepository.Update(orderTemp);
+                    unitOfWork.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-        }
-
-        private void UpdateOrderWithProduct(OrderLineBO item)
-        {
-            //Retrieving the orderline as temporary to check the database quantity
-            var tempOrderLine = orderItemRepository.Get(item.Id);
-
-            //Identifying the difference between the updated orderline and database quantity
-            var tempDifference = tempOrderLine.Quantity - item.Quantity;
-            //setting the quantity
-            tempOrderLine.Quantity = item.Quantity;
-
-            if (item.Quantity == 0)
-            {
-                //If the quantity is zero the order item is deleted
-                RemoveOrderLine(tempOrderLine);
-            }
-            else
-            {
-                //updates the orderline
-                var order = mapper.Map<Models.OrderLine>(tempOrderLine);
-                orderItemRepository.Update(order);
-                unitOfWork.SaveChanges();
-            }
-
-            //updates the difference quantity
-            productService.Update(item.ProductId, tempDifference);
-        }
-
-        private void InsertOrUpdateOrderLine(OrderLineBO orderLineBO)
-        {
-            productService.Update(orderLineBO.ProductId, orderLineBO.Quantity);
-
-            var orderItem = mapper.Map<Models.OrderLine>(orderLineBO);
-            orderItemRepository.Insert(orderItem);
-            unitOfWork.SaveChanges();
-        }
-
-        private void RemoveOrderLine(Models.OrderLine orderLine)
-        {
-            if (orderLine == null)
-                throw new OrderLineNotFoundException();
-            orderItemRepository.Delete(orderLine);
-            unitOfWork.SaveChanges();
         }
 
         public OrderBO GetOrderById(int id)

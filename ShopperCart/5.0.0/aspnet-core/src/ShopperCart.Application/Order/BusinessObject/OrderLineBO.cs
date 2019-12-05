@@ -47,6 +47,8 @@ namespace ShopperCart.Order.BusinessObject
             }
         }
 
+        public bool IsDeleted { get; set; }
+
         public OrderLineBO()
         {
 

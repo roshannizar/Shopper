@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using ShopperCart.Customer;
 using ShopperCart.Customer.BusinessObject;
+using ShopperCart.Product;
 using ShopperCart.Product.BusinessObject;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,22 @@ namespace ShopperCart.Order.BusinessObject
             Date = dateTime;
             OrderItems = orderItemsBO;
             Status = status;
+
+            foreach(var item in orderItemsBO)
+            {
+                if (item.Quantity == 0)
+                {
+                    throw new InAdequateProductQuantityException();
+                }
+            }
+
+            return this;
+        }
+
+        public OrderBO Update(OrderBO orderBO, OrderLineBO orderLineBO)
+        {
+            Id = orderBO.Id;
+            CustomerId = orderBO.CustomerId;
             return this;
         }
     }
