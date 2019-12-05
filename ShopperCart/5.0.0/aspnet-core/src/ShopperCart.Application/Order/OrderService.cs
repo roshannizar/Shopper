@@ -102,6 +102,7 @@ namespace ShopperCart.Order
                     {
                         var orderItemQuantity = orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id).Quantity;
                         var difference = orderItemQuantity - item.Quantity;
+                        orderTemp.OrderItems.FirstOrDefault(o => o.Id == item.Id).Quantity = item.Quantity;
 
                         if (item.IsDeleted)
                         {
