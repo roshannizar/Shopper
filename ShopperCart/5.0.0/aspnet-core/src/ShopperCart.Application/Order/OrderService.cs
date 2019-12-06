@@ -36,13 +36,15 @@ namespace ShopperCart.Order
                 var order = mapper.Map<Models.Order>(orderBOTemp);
                 //This method will add orderlines as well, since this entity has the orderline list
                 orderRepository.Insert(order);
-                unitOfWork.SaveChanges();
+               
 
                 foreach (var item in orderBO.OrderItems)
                 {
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
+
+                unitOfWork.SaveChanges();
             }
             catch (OrderNotFoundException ex)
             {
