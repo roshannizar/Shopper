@@ -121,28 +121,9 @@ namespace ShopperCart.Order
                     }
 
                     //updates the order
-
                     orderRepository.Update(orderTemp);
                     unitOfWork.SaveChanges();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public OrderBO GetOrderById(int id)
-        {
-            try
-            {
-                var orders = orderRepository.GetAllIncluding()
-                                                .Include(i => i.OrderItems)
-                                                    .ThenInclude(i => i.Products)
-                                                    .Include(i => i.Customers)
-                                                    .First(o => o.Id == id);
-                var query = mapper.Map<OrderBO>(orders);
-                return query;
             }
             catch (Exception ex)
             {
@@ -165,6 +146,24 @@ namespace ShopperCart.Order
                 {
                     throw new OrderNotFoundException();
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public OrderBO GetOrderById(int id)
+        {
+            try
+            {
+                var orders = orderRepository.GetAllIncluding()
+                                                .Include(i => i.OrderItems)
+                                                    .ThenInclude(i => i.Products)
+                                                    .Include(i => i.Customers)
+                                                    .First(o => o.Id == id);
+                var query = mapper.Map<OrderBO>(orders);
+                return query;
             }
             catch (Exception ex)
             {
