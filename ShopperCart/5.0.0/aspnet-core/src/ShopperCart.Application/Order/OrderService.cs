@@ -32,18 +32,17 @@ namespace ShopperCart.Order
             try
             {
                 var orderBOTemp = orderBO.Create(orderBO.CustomerId, orderBO.Date, orderBO.OrderItems, orderBO.Status);
+               
+                var order = mapper.Map<Models.Order>(orderBOTemp);
+                //This method will add orderlines as well, since this entity has the orderline list
+                orderRepository.Insert(order);
+                unitOfWork.SaveChanges();
 
                 foreach (var item in orderBO.OrderItems)
                 {
                     //Updating the product
                     productService.Update(item.ProductId, -(item.Quantity));
                 }
-                
-                var order = mapper.Map<Models.Order>(orderBOTemp);
-
-                //This method will add orderlines as well, since this entity has the orderline list
-                orderRepository.Insert(order);
-                unitOfWork.SaveChanges();
             }
             catch (OrderNotFoundException ex)
             {
